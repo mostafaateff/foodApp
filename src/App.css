@@ -1,0 +1,26 @@
+
+@import "react-toastify/dist/ReactToastify.css";
+
+.auth-container{
+    background-image: url(../src/assets/auth-bg.png);
+    background-size: cover;
+    
+}
+
+.bg-overlay{
+    background: linear-gradient(#2f8c617a , #00000088);
+}
+
+.form-content a{
+    text-decoration: none;
+}
+
+.second-color{
+ color: rgba(74, 163, 90, 1);
+}
+
+.button-style{
+    background-color: rgba(74, 163, 90, 1)  ;
+    border: none;
+    
+}
