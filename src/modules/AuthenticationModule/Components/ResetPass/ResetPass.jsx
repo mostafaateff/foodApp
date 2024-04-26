@@ -12,14 +12,16 @@ export default function ResetPass() {
 
   let { register, handleSubmit, formState: { errors },  getValues } = useForm()
   
-  // let password;
- 
   const onSubmit = async(data) => {
     try {
       let response = await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/Users/Reset"
         , data);
-      console.log(response);
+      toast.success(response.data.message, {
+        autoClose: 3000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
       navigate('/login')
     } catch (error) {
       toast.error(error.response.data.message, {
@@ -30,7 +32,6 @@ export default function ResetPass() {
     }
   }
 
-  // password = watch("password", "");
 
   let [showPassword, setShowPassword] = useState(null);
 

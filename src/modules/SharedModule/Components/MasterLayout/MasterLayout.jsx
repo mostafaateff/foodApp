@@ -2,26 +2,18 @@
 import React from "react";
 import Slidebar from "../Slidebar/Slidebar";
 import Navbar from "../Navbar/Navbar";
-import Header from "../Header/Header";
 import { Outlet } from "react-router-dom";
 
-export default function MasterLayout() {
+export default function MasterLayout(loginData) {
   return (
     <>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-3">
-            <div>
-              <Slidebar />
-            </div>
-          </div>
-          <div className="col-md-9">
-            <div>
-              <Navbar  />
-              <Header />
-              <Outlet />
-            </div>
-          </div>
+      <div className="d-flex">
+        <div>
+          <Slidebar />
+        </div>
+        <div className="w-100">
+          <Navbar loginData={loginData} />
+          <Outlet />
         </div>
       </div>
     </>

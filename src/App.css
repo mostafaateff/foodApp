@@ -1,26 +1,61 @@
-
 @import "react-toastify/dist/ReactToastify.css";
 
-.auth-container{
-    background-image: url(../src/assets/auth-bg.png);
+.auth-container {
+  background-image: url(../src/assets/auth-bg.png);
+  background-size: cover;
+}
+
+.bg-overlay {
+  background: linear-gradient(#2f8c617a, #00000088);
+}
+
+.form-content a {
+  text-decoration: none;
+}
+
+.second-color {
+  color: rgba(74, 163, 90, 1);
+}
+
+.button-style {
+  background-color: rgba(74, 163, 90, 1);
+  border: none;
+}
+
+.bg-not {
+  background-image: url(../src/assets/Vector.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.bg-not img {
+  top: 45%;
+  left: 40%;
+}
+
+.notfound-color {
+  color: rgba(74, 163, 90, 1);
+}
+
+.notfound-button {
+  background-color: rgba(0, 146, 71, 1);
+  border: none;
+}
+
+.sidebar-container .ps-sidebar-container {
+  background-color: rgba(31, 38, 62, 1);
+  height: 100vh;
+  border-top-right-radius: 60px;
+}
+
+.sidebar-container .ps-sidebar-container .ps-menu-button:hover {
+  background-color: rgba(0, 146, 77, 0.1);
+}
+
+.header-contaiiner{
+    background-color: #009247;
+    background-image: url(../src/assets/header-bg-svg.svg);
+    background-position: center;
     background-size: cover;
-    
-}
-
-.bg-overlay{
-    background: linear-gradient(#2f8c617a , #00000088);
-}
-
-.form-content a{
-    text-decoration: none;
-}
-
-.second-color{
- color: rgba(74, 163, 90, 1);
-}
-
-.button-style{
-    background-color: rgba(74, 163, 90, 1)  ;
-    border: none;
-    
 }
