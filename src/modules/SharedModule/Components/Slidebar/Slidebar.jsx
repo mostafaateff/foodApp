@@ -2,10 +2,14 @@
 import React, { useState } from 'react'
 import logo from "../../../../assets/logo.png";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 
 export default function Slidebar() {
+
+  const logOut = () => {
+    localStorage.removeItem('token')
+  }
 
   let [isCollapse, setIsCollapse] = useState(false)
   
@@ -52,6 +56,7 @@ export default function Slidebar() {
           </MenuItem>
           <MenuItem
             icon={<i className="fa fa-right-from-bracket"></i>}
+            onClick={logOut}
             component={<Link to="/login" />}
           >
             logout

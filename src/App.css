@@ -43,6 +43,7 @@
   border: none;
 }
 
+
 .sidebar-container .ps-sidebar-container {
   background-color: rgba(31, 38, 62, 1);
   height: 100vh;
@@ -59,3 +60,5 @@
     background-position: center;
     background-size: cover;
 }
+
+

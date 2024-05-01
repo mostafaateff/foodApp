@@ -7,8 +7,8 @@ import { Outlet } from "react-router-dom";
 export default function MasterLayout(loginData) {
   return (
     <>
-      <div className="d-flex">
-        <div>
+      <div className="d-flex ">
+        <div className="sidebar-container">
           <Slidebar />
         </div>
         <div className="w-100">

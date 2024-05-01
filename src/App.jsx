@@ -55,7 +55,7 @@ function App() {
       errorElement: <NotFound />,
       children: [
         {
-          path: "",
+          index:true,
           element: <Login saveLoginData={saveLoginData} />,
         },
         {

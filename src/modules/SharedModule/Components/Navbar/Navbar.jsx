@@ -10,7 +10,7 @@ export default function Navbar({ loginData }) {
         <input type="search" className=" form-control w-75" placeholder='Search here' />
         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
           <li className="nav-item">
-            <Link className="nav-link" > <img src={icon} className="w-25" /> {loginData?.loginData.userName}</Link>
+            <Link className="nav-link" > <img src={icon} className="w-25" /> {loginData?.loginData?.userName}</Link>
           </li>
         </ul>
       </div>

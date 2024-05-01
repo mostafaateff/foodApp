@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React , { children } from 'react'
 import { Navigate } from 'react-router-dom'
 
 export default function ProtectedRoute({loginData , children}) {
