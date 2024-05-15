@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider,  createHashRouter } from "react-router-dom";
 import "./App.css";
 
 import MasterLayout from "./modules/SharedModule/Components/MasterLayout/MasterLayout";
@@ -35,7 +35,8 @@ function App() {
     }
   }, []);
 
-  let routes = createBrowserRouter([
+  let routes = createHashRouter([
+  
     {
       path: "dashboard",
       element: (
