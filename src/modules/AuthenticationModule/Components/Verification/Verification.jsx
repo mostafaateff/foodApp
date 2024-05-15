@@ -1,12 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
-import logo from '../../../../assets/4 3.png'
+
+import React from "react";
+import logo from "../../../../assets/4 3.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import {  toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-export default function Login( {saveLoginData} ) {
+
+export default function Verification() {
 
   let navigate = useNavigate();
 
@@ -18,31 +19,25 @@ export default function Login( {saveLoginData} ) {
 
   const onSubmit = async (data) => {
     try {
-      let response = await axios.post(
-        "https://upskilling-egypt.com:3006/api/v1/Users/Login",
+      let response = await axios.put(
+        "https://upskilling-egypt.com:3006/api/v1/Users/verify",
         data
       );
-     
-       toast.success("logged in successfully", {
-         autoClose: 3000,
-         hideProgressBar: true,
-         pauseOnHover: false
-       });
-      localStorage.setItem("token", response.data.token);
-      saveLoginData();
-      navigate("/dashboard");
-     
+    console.log(response);
+      toast.success(response.message, {
+        autoClose: 3000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
+      navigate("/login");
     } catch (error) {
-     toast.error(error.response.data.message, {
-       autoClose: 3000,
-       hideProgressBar: true,
-       pauseOnHover: false,
-     });
-
+      toast.error(error.response.data.message, {
+        autoClose: 3000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
     }
   };
-
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
@@ -54,7 +49,7 @@ export default function Login( {saveLoginData} ) {
                 <img src={logo} className="w-50" alt="" />
               </div>
               <div className="form-content w-75 mx-auto">
-                <h3>Log In</h3>
+                <h3>Verification</h3>
                 <p className="text-muted">
                   Welcome Back! Please enter your details
                 </p>
@@ -79,44 +74,25 @@ export default function Login( {saveLoginData} ) {
                   {errors.email && (
                     <p className="alert alert-danger">{errors.email.message}</p>
                   )}
-                  <div className="input-group mt-4">
+
+                  <div className="input-group mb-3">
                     <span className="input-group-text" id="basic-addon1">
                       <i className="fa fa-key text-muted"></i>
                     </span>
                     <input
-                      type={showPassword ? "text" : "password"}
+                      type="text"
                       className="form-control bg-light"
-                      placeholder="Password"
-                      {...register("password", {
-                        required: "Password Is Required",
+                      placeholder="Enter Your Code"
+                      {...register("code", {
+                        required: "code Is Required",
                       })}
                     />
-                    <span
-                      className="input-group-text"
-                      id="basic-addon1"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      <i className="fa fa-eye text-muted "></i>
-                    </span>
                   </div>
-                  {errors.password && (
-                    <p className=" alert alert-danger">
-                      {errors.password.message}
-                    </p>
+                  {errors.code && (
+                    <p className="alert alert-danger">{errors.code.message}</p>
                   )}
-                  <div className=" mt-2 d-flex justify-content-between align-items-center">
-                    <Link to={"/register"} className=" fw-semibold text-black">
-                      Register Now?
-                    </Link>
-                    <Link
-                      className=" fw-semibold second-color "
-                      to={"/forgetpass"}
-                    >
-                      Forgot Password?
-                    </Link>
-                  </div>
                   <button className=" button-style rounded-2 w-100 text-white fw-semibold py-2 my-2">
-                    Login
+                    Submit
                   </button>
                 </form>
               </div>
@@ -127,6 +103,3 @@ export default function Login( {saveLoginData} ) {
     </>
   );
 }
-
-
-

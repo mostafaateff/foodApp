@@ -43,11 +43,11 @@ export default function CategoriesList() {
 
   let [categoriesList, setCategpriesList] = useState([])
 
-  const getCategories = async () => {
+  const getCategories = async (name) => {
     try {
       let response = await axios.get(
         "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } , params:{name:name} }
       );
       console.log(response.data.data);
       setCategpriesList(response.data.data);
@@ -112,7 +112,7 @@ if (mode==='add') {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      toast.success("Item Deleted Successfully", {
+      toast.warning("Item Deleted Successfully", {
         autoClose: 3000,
         hideProgressBar: true,
         pauseOnHover: false,
@@ -122,6 +122,10 @@ if (mode==='add') {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const getNameValue = (e) => {
+    getCategories(e.target.value)
   }
 
   useEffect(() => {
@@ -136,7 +140,9 @@ if (mode==='add') {
           onHide={mode === "add" ? handleClose : handleCloseUpdate}
         >
           <Modal.Header closeButton>
-            <Modal.Title>{mode === "add" ? "Add Category" : "Update Category"}</Modal.Title>
+            <Modal.Title>
+              {mode === "add" ? "Add Category" : "Update Category"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body className="my-4 px-5 ">
             <form
@@ -150,7 +156,7 @@ if (mode==='add') {
               <input
                 type="text"
                 placeholder="Category Name"
-                defaultValue={''}
+                defaultValue={""}
                 className="form-control my-3 bg-body-tertiary "
                 {...register("name", { required: "Category Name Is Required" })}
               />
@@ -202,6 +208,15 @@ if (mode==='add') {
           </div>
         </div>
       </div>
+
+      <div className="container ">
+        <input
+          onChange={getNameValue}
+          placeholder="Search . ."
+          type="search"
+          className="form-control w-50 mx-auto my-3"
+        />
+      </div>
       {categoriesList.length ? (
         <div className="categories-crud container-fluid">
           <Table striped bordered hover className="text-center">
@@ -223,7 +238,7 @@ if (mode==='add') {
                   <td>{ele.modificationDate}</td>
                   <td>
                     <i
-                      onClick={() => handleShowUpdate(ele.id , ele.name)}
+                      onClick={() => handleShowUpdate(ele.id, ele.name)}
                       className="fa fa-edit mx-2 text-warning"
                     ></i>
                     <i

@@ -1,5 +1,10 @@
 @import "react-toastify/dist/ReactToastify.css";
 
+.shared-link a  {
+  color :white ;
+  text-decoration: none;
+}
+
 .auth-container {
   background-image: url(../src/assets/auth-bg.png);
   background-size: cover;
@@ -43,10 +48,13 @@
   border: none;
 }
 
+.sidebar-container .css-1wvake5 {
+  border: none;
+}
 
 .sidebar-container .ps-sidebar-container {
+  min-height: 100vh;
   background-color: rgba(31, 38, 62, 1);
-  height: 100vh;
   border-top-right-radius: 60px;
 }
 
@@ -59,6 +67,14 @@
     background-image: url(../src/assets/header-bg-svg.svg);
     background-position: center;
     background-size: cover;
+}
+
+.shared-header {
+  background-color: rgba(240, 255, 239, 1);
+}
+
+.shared-header span {
+  color : rgba(0, 146, 71, 1)
 }
 
 

@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import ProtectedRoute from "./modules/SharedModule/Components/ProtectedRoute/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import ChangePass from "./modules/AuthenticationModule/Components/ChangePass/ChangePass";
+import Verification from "./modules/AuthenticationModule/Components/Verification/Verification";
+import RecipeData from "./modules/ReceipesModule/Components/RecipeData/RecipeData";
 
 function App() {
   let [loginData, setLoginData] = useState(null);
@@ -42,9 +45,10 @@ function App() {
       ),
       errorElement: <NotFound />,
       children: [
-        { index: true, element: <Dashbord /> },
-        { path: "home", element: <Dashbord /> },
-        { path: "recipes", element: <ReceipesList /> },
+        { index: true, element: <Dashbord loginData={loginData} /> },
+        { path: "home", element: <Dashbord loginData={loginData} /> },
+        { path: "recipes", element: <ReceipesList loginData={loginData} /> },
+        { path: "recipeData", element: <RecipeData /> },
         { path: "categories", element: <CategoriesList /> },
         { path: "users", element: <UsersList /> },
       ],
@@ -55,7 +59,7 @@ function App() {
       errorElement: <NotFound />,
       children: [
         {
-          index:true,
+          index: true,
           element: <Login saveLoginData={saveLoginData} />,
         },
         {
@@ -64,7 +68,9 @@ function App() {
         },
         { path: "register", element: <Register /> },
         { path: "forgetPass", element: <ForgetPass /> },
+        { path: "verification", element: <Verification /> },
         { path: "resetPass", element: <ResetPass /> },
+        { path: "changePass", element: <ChangePass /> },
       ],
     },
   ]);
