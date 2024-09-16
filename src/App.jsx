@@ -1,6 +1,5 @@
 import { RouterProvider,  createHashRouter } from "react-router-dom";
 import "./App.css";
-
 import MasterLayout from "./modules/SharedModule/Components/MasterLayout/MasterLayout";
 import NotFound from "./modules/SharedModule/Components/NotFound/NotFound";
 import AuthLayout from "./modules/SharedModule/Components/AuthLayout/AuthLayout";
@@ -19,6 +18,7 @@ import { ToastContainer } from "react-toastify";
 import ChangePass from "./modules/AuthenticationModule/Components/ChangePass/ChangePass";
 import Verification from "./modules/AuthenticationModule/Components/Verification/Verification";
 import RecipeData from "./modules/ReceipesModule/Components/RecipeData/RecipeData";
+import FavoritesList from "./modules/FavoritesModule/Components/FavoritesList/FavoritesList";
 
 function App() {
   let [loginData, setLoginData] = useState(null);
@@ -52,6 +52,7 @@ function App() {
         { path: "recipeData", element: <RecipeData /> },
         { path: "categories", element: <CategoriesList /> },
         { path: "users", element: <UsersList /> },
+        { path: "favorites", element: <FavoritesList /> },
       ],
     },
     {

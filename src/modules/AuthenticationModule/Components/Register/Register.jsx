@@ -8,20 +8,19 @@ import axios from "axios";
 
 export default function Register() {
 
-  let appendToFormData = (data) => {
+    let appendToFormData = (data) => {
       
     let registerFormData = new FormData();
 
     registerFormData.append("userName", data.userName)
     registerFormData.append("email", data.email)
     registerFormData.append("country", data.country)
-     registerFormData.append("password", data.password)
-     registerFormData.append("confirmPassword", data.confirmPassword)
+    registerFormData.append("password", data.password)
+    registerFormData.append("confirmPassword", data.confirmPassword)
     registerFormData.append("phoneNumber", data.phoneNumber)
     registerFormData.append("profileImage", data.profileImage)
 
     return registerFormData ;
-
   };
 
   let navigate = useNavigate();

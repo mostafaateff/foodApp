@@ -1,9 +1,10 @@
+
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import Header from "../../../SharedModule/Components/Header/Header";
 import receipesImg from "../../../../assets/Group receipes.png";
 import axios from "axios";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table, Pagination } from "react-bootstrap";
 import { toast } from "react-toastify";
 import noData from "../../../../assets/no-data.png";
 import food from "../../../../assets/food.jpg";
@@ -11,15 +12,11 @@ import DeleteItems from "../../../SharedModule/Components/DeleteItems/DeleteItem
 import { useNavigate } from "react-router-dom";
 
 export default function ReceipesList({ loginData }) {
-
   let navigate = useNavigate();
 
   const [receipesList, setReceipesList] = useState([]);
-
   const [receipeDescription, setReceipeDescription] = useState([]);
-
   const [ReceipeId, setReceipeId] = useState("");
-
   const [showDelete, setShowDelete] = useState(false);
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = (id) => {
@@ -38,47 +35,48 @@ export default function ReceipesList({ loginData }) {
   let [recipeTag, setRecipeTag] = useState(null);
   let [recipeCategory, setRecipeCategory] = useState(null);
 
-
-    let [tagsId, setTagsId] = useState([]);
-
-    const getTagsId = async () => {
-      try {
-        let response = await axios.get(
-          "https://upskilling-egypt.com:3006/api/v1/tag",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        console.log(response);
-        setTagsId(response.data);
-        console.log(tagsId);
-      } catch (error) {
-        console.log(error);
-      }
+  let [tagsId, setTagsId] = useState([]);
+  const getTagsId = async () => {
+    try {
+      let response = await axios.get(
+        "https://upskilling-egypt.com:3006/api/v1/tag",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response);
+      setTagsId(response.data);
+      console.log(tagsId);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
-   let [categoriesList, setCategoriesList] = useState([]);
 
-   const getCategories = async () => {
-     try {
-       let response = await axios.get(
-         "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
-         {
-           headers: {
-             Authorization: `Bearer ${localStorage.getItem("token")}`,
-           },
-         }
-       );
-       console.log(response.data.data);
-       setCategoriesList(response.data.data);
-     } catch (error) {
-       console.log(error);
-     }
-   };
+  let [categoriesList, setCategoriesList] = useState([]);
+  const getCategories = async () => {
+    try {
+      let response = await axios.get(
+        "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data.data);
+      setCategoriesList(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const getReceipes = async (name, tagId, categoryId, pageSize, pageNumber) => {
+  const [pageSize, setPageSize] = useState(10);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalReceipes, setTotalReceipes] = useState(0);
+
+  const getReceipes = async (name, tagId, categoryId) => {
     try {
       let response = await axios.get(
         `https://upskilling-egypt.com:3006/api/v1/Recipe/?pageSize=${pageSize}&pageNumber=${pageNumber}`,
@@ -94,13 +92,14 @@ export default function ReceipesList({ loginData }) {
         }
       );
       setReceipesList(response.data.data);
-      console.log(response.data.data);
+      setTotalReceipes(response.data.totalNumberOfRecords); 
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  let deleteReceipeItem = async () => {
+  const deleteReceipeItem = async () => {
     await axios.delete(
       `https://upskilling-egypt.com:3006/api/v1/Recipe/${ReceipeId}`,
       {
@@ -113,7 +112,7 @@ export default function ReceipesList({ loginData }) {
       pauseOnHover: false,
     });
     handleCloseDelete();
-    getReceipes();
+    getReceipes(recipeName, recipeTag, recipeCategory);
   };
 
   const addRecipe = () => {
@@ -148,30 +147,101 @@ export default function ReceipesList({ loginData }) {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const addToFavorites = async (recipeId) => {
     try {
       let response = await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/userRecipe/",
-        {recipeId},
+        { recipeId },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
       setShowDetails(false);
+      toast.success("Item Added To Favorites Successfully", {
+        autoClose: 3000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
       console.log(response);
     } catch (error) {
       console.log(error);
-      // setShowDetails(false);
     }
   };
 
   useEffect(() => {
-    getReceipes('','','',5,1);
+    getReceipes("", "", "");
     getTagsId();
     getCategories();
-  }, []);
+  }, [pageNumber, pageSize]);
+
+  const handlePageChange = (page) => {
+    setPageNumber(page);
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(e.target.value);
+    setPageNumber(1); 
+  };
+
+  const renderPaginationItems = () => {
+    const totalPages = Math.ceil(totalReceipes / pageSize);
+    const maxPagesToShow = 5;
+    const items = [];
+
+    if (totalPages <= maxPagesToShow) {
+      for (let number = 1; number <= totalPages; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === pageNumber}
+            onClick={() => handlePageChange(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
+    } else {
+      if (pageNumber > 3) {
+        items.push(
+          <Pagination.Item key={1} onClick={() => handlePageChange(1)}>
+            1
+          </Pagination.Item>,
+          <Pagination.Ellipsis key="start-ellipsis" />
+        );
+      }
+
+      const startPage = Math.max(pageNumber - 2, 1);
+      const endPage = Math.min(pageNumber + 2, totalPages);
+
+      for (let number = startPage; number <= endPage; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === pageNumber}
+            onClick={() => handlePageChange(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
+
+      if (pageNumber < totalPages - 2) {
+        items.push(
+          <Pagination.Ellipsis key="end-ellipsis" />,
+          <Pagination.Item
+            key={totalPages}
+            onClick={() => handlePageChange(totalPages)}
+          >
+            {totalPages}
+          </Pagination.Item>
+        );
+      }
+    }
+
+    return items;
+  };
 
   return (
     <>
@@ -204,9 +274,6 @@ export default function ReceipesList({ loginData }) {
               alt=""
             />
           </div>
-          {/* <h4 className="text-black my-3">
-            Category : {receipeDescription.category[0]?.name}
-          </h4> */}
           <h4 className="text-black my-3">Name : {receipeDescription.name}</h4>
           <h4 className="text-black my-3">
             Price : {receipeDescription.price}
@@ -218,7 +285,7 @@ export default function ReceipesList({ loginData }) {
         <Modal.Footer>
           <Button
             variant="danger"
-            onClick={()=>addToFavorites(receipeDescription.id)}
+            onClick={() => addToFavorites(receipeDescription.id)}
           >
             Add To Favorites
           </Button>
@@ -232,22 +299,27 @@ export default function ReceipesList({ loginData }) {
         }
         imgUrl={receipesImg}
       />
-      <div className="container-fluid ">
-        <div className="row g-0 mx-1">
-          <div className="col-md-6">
-            <h4 className=" my-0 pt-1">Recipe Table Details</h4>
-            <p>You can check all details</p>
-          </div>
-          <div className="col-md-6 text-end pt-2">
-            <button
-              onClick={addRecipe}
-              className="notfound-button rounded-3 text-white px-5 py-2 "
-            >
-              Add New Items
-            </button>
+
+      {loginData?.userGroup === "SystemUser" ? (
+        ""
+      ) : (
+        <div className="container-fluid ">
+          <div className="row g-0 mx-1">
+            <div className="col-md-6">
+              <h4 className=" my-0 pt-1">Recipe Table Details</h4>
+              <p>You can check all details</p>
+            </div>
+            <div className="col-md-6 text-end pt-2">
+              <button
+                onClick={addRecipe}
+                className="notfound-button rounded-3 text-white px-5 py-2 "
+              >
+                Add New Items
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="recipes-filteration contaier m-3">
         <div className="row  ">
@@ -306,9 +378,9 @@ export default function ReceipesList({ loginData }) {
               </tr>
             </thead>
             <tbody>
-              {receipesList.map((ele, index) => (
+              {receipesList.map((ele , index) => (
                 <tr key={ele.id}>
-                  <td>{index + 1}</td>
+                  <td>{(pageNumber - 1) * pageSize + index + 1}</td>
                   <td>{ele.name}</td>
                   <td>
                     <img
@@ -328,6 +400,10 @@ export default function ReceipesList({ loginData }) {
                   {loginData?.userGroup === "SystemUser" ? (
                     <td>
                       <i
+                        onClick={() => addToFavorites(ele.id)}
+                        className="fa fa-heart mx-2 text-danger"
+                      ></i>
+                      <i
                         onClick={() => handleShowDetails(ele.id)}
                         className="fa fa-eye text-warning"
                       ></i>
@@ -345,6 +421,26 @@ export default function ReceipesList({ loginData }) {
               ))}
             </tbody>
           </Table>
+
+          <div className="d-flex justify-content-between align-items-center">
+            <Pagination>{renderPaginationItems()}</Pagination>
+            <div>
+              <label className=" fw-semibold mb-2">
+                Show
+                <select
+                  value={pageSize}
+                  onChange={handlePageSizeChange}
+                  className="mx-2"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                  <option value={20}>20</option>
+                </select>
+                Receipes
+              </label>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="categories-noData text-center w-50 mx-auto">
@@ -359,3 +455,4 @@ export default function ReceipesList({ loginData }) {
     </>
   );
 }
+

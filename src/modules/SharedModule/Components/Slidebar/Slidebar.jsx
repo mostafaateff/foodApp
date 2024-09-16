@@ -42,9 +42,22 @@ export default function Slidebar({loginData}) {
               </MenuItem>
               <MenuItem
                 icon={<i className="fa fa-heart"></i>}
-                component={<Link to="/dashboard/categories" />}
+                component={<Link to="/dashboard/favorites" />}
               >
                 Favorites
+              </MenuItem>
+              <MenuItem
+                icon={<i className="fa  fa-unlock-keyhole"></i>}
+                component={<Link to="/changePass" />}
+              >
+                Change Password
+              </MenuItem>
+              <MenuItem
+                icon={<i className="fa fa-right-from-bracket"></i>}
+                onClick={logOut}
+                component={<Link to="/login" />}
+              >
+                logout
               </MenuItem>
             </Menu>
           </Sidebar>

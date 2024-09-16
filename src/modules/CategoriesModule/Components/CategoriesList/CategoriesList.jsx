@@ -1,63 +1,68 @@
+
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import Header from "../../../SharedModule/Components/Header/Header";
 import CategoriesImg from "../../../../assets/Group receipes.png";
 import noData from "../../../../assets/no-data.png";
-import { Table, Modal, Button } from "react-bootstrap";
+import { Table, Modal, Button, Pagination } from "react-bootstrap";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import DeleteItems from "../../../SharedModule/Components/DeleteItems/DeleteItems";
 
 export default function CategoriesList() {
-
-  const {register , handleSubmit , formState:{errors} , setValue} = useForm()
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
 
   const [catId, setCatId] = useState('');
-
   const [mode, setMode] = useState('');
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setMode("add");
     setShow(true);
-    setValue("name", ""); 
-  }   
+    setValue("name", "");
+  };
 
- const [showUpdate, setShowUpdate] = useState(false);
- const handleCloseUpdate = () => setShowUpdate(false);
+  const [showUpdate, setShowUpdate] = useState(false);
+  const handleCloseUpdate = () => setShowUpdate(false);
   const handleShowUpdate = (id, name) => {
     setCatId(id);
     setMode("update");
     setShowUpdate(true);
-    setValue("name", name); 
-    }; 
+    setValue("name", name);
+  };
 
   const [showDelete, setShowDelete] = useState(false);
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = (id) => {
-   setCatId(id);
-   setShowDelete(true);   
-  }
+    setCatId(id);
+    setShowDelete(true);
+  };
 
-  let [categoriesList, setCategpriesList] = useState([])
+  let [categoriesList, setCategoriesList] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalCategories, setTotalCategories] = useState(0);
 
   const getCategories = async (name) => {
     try {
       let response = await axios.get(
-        "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } , params:{name:name} }
+        "https://upskilling-egypt.com:3006/api/v1/Category/",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          params: { name: name, pageSize: pageSize, pageNumber: pageNumber }
+        }
       );
-      console.log(response.data.data);
-      setCategpriesList(response.data.data);
+      setCategoriesList(response.data.data);
+      console.log(response.data);     
+      setTotalCategories(response.data.totalNumberOfRecords);
     } catch (error) {
       console.log(error);
     }
   }
 
-if (mode==='add') {
-   var addCategories = async (data) => {
+  if (mode === 'add') {
+    var addCategories = async (data) => {
       try {
         let addedCategory = await axios.post(
           "https://upskilling-egypt.com:3006/api/v1/Category",
@@ -68,18 +73,18 @@ if (mode==='add') {
             },
           }
         );
-         toast.success("Item Added Successfully", {
-           autoClose: 3000,
-           hideProgressBar: true,
-           pauseOnHover: false,
-         });
+        toast.success("Item Added Successfully", {
+          autoClose: 3000,
+          hideProgressBar: true,
+          pauseOnHover: false,
+        });
         handleClose();
         getCategories();
       } catch (error) {
         console.log(error);
       }
-  };
-} else {
+    };
+  } else {
     var updateCategories = async (data) => {
       try {
         let updatedCategory = await axios.put(
@@ -103,7 +108,7 @@ if (mode==='add') {
       }
     };
   }
-  
+
   const deleteCategoryItem = async () => {
     try {
       let deletedItem = await axios.delete(
@@ -125,12 +130,34 @@ if (mode==='add') {
   }
 
   const getNameValue = (e) => {
-    getCategories(e.target.value)
+    getCategories(e.target.value);
   }
 
   useEffect(() => {
-    getCategories()
-  }, [])
+    getCategories();
+  }, [pageSize, pageNumber]);
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(parseInt(e.target.value));
+    setPageNumber(1);
+  };
+
+  const handlePageChange = (page) => {
+    setPageNumber(page);
+  };
+
+  const renderPaginationItems = () => {
+    const totalPages = Math.ceil(totalCategories / pageSize);
+    let items = [];
+    for (let number = 1; number <= totalPages; number++) {
+      items.push(
+        <Pagination.Item key={number} active={number === pageNumber} onClick={() => handlePageChange(number)}>
+          {number}
+        </Pagination.Item>
+      );
+    }
+    return items;
+  };
 
   return (
     <>
@@ -230,9 +257,9 @@ if (mode==='add') {
               </tr>
             </thead>
             <tbody>
-              {categoriesList.map((ele, index) => (
+              {categoriesList.map((ele , index) => (
                 <tr key={ele.id}>
-                  <td>{index + 1}</td>
+                  <td>{(pageNumber - 1) * pageSize + index + 1}</td>
                   <td>{ele.name}</td>
                   <td>{ele.creationDate}</td>
                   <td>{ele.modificationDate}</td>
@@ -250,6 +277,24 @@ if (mode==='add') {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center">
+            <Pagination>{renderPaginationItems()}</Pagination>
+            <div>
+              <label className=" fw-semibold mb-2">
+                Show
+                <select
+                  value={pageSize}
+                  onChange={handlePageSizeChange}
+                  className="mx-2"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                </select>
+                Categories
+              </label>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="categories-noData text-center w-50 mx-auto">
